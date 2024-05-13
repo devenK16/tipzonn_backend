@@ -31,10 +31,10 @@ app.use('/api/users', usersRouter);
 
 
 // Serve the index.html file 
-app.get('/', (req, res) => { res.sendFile(path.join('C:', 'Users', 'ACER', 'tipTest', 'index.html')); });
- // Serve static files from the 'tipTest' director
+// app.get('/', (req, res) => { res.sendFile(path.join('C:', 'Users', 'ACER', 'tipTest', 'index.html')); });
+//  // Serve static files from the 'tipTest' director
 
-app.use(express.static(path.join('C:', 'Users', 'ACER', 'tipTest')));
+// app.use(express.static(path.join('C:', 'Users', 'ACER', 'tipTest')));
 
 
 const PORT = process.env.PORT || 5000;
