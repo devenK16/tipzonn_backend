@@ -93,4 +93,22 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
+// Get worker by ID
+router.get('/:id', auth, async (req, res) => {
+  const workerId = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    const worker = await Worker.findOne({ _id: workerId, userId });
+
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+    res.json(worker);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
