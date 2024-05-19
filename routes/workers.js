@@ -94,8 +94,8 @@ router.get('/:userId', async (req, res) => {
 });
 
 // Get worker by ID test
-router.get('/:id', auth, async (req, res) => {
-  const workerId = req.params.id;
+router.get('/worker/:workerId', auth, async (req, res) => {
+  const workerId = req.params.workerId;
   const userId = req.user.id;
 
   try {
