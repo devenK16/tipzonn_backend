@@ -99,7 +99,7 @@ router.get('/:id', auth, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const worker = await Worker.findOne({ _id: workerId, userId });
+    const worker = await Worker.findOne({ _id: workerId });
 
     if (!worker) {
       return res.status(404).json({ message: 'Worker not found' });
