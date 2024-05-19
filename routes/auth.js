@@ -28,7 +28,7 @@ router.post('/signup', async (req, res) => {
     await newUser.save();
     
     // Generate QR code
-    const qrCodeUrl = `http://tipzonn-main.eba-hvbywyw6.ap-south-1.elasticbeanstalk.com/?userId=${newUser._id}`;
+    const qrCodeUrl = `https://www.tipzonn.com/?restaurantId=${newUser._id}`;
     const qrCodeImage = await qrcode.toDataURL(qrCodeUrl);
     
     // Save QR code to user profile
