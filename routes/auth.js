@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Sign up
 router.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password , address , contactNumber} = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -23,6 +23,8 @@ router.post('/signup', async (req, res) => {
       name : name,
       email: email,
       password: hashedPassword,
+      address: address,
+      contactNo : contactNumber
     });
 
     await newUser.save();
