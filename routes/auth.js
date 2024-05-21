@@ -20,15 +20,17 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const newUser = new User({
-      name,
-      email,
+      name : name,
+      email: email,
       password: hashedPassword,
+      address: "",
+      contactNo: "",
     });
 
     await newUser.save();
     
     // Generate QR code
-    const qrCodeUrl = `https://www.tipzonn.com/?restaurantId=${newUser._id}`;
+    const qrCodeUrl = `https://www.tipzonn.com/?tzId=${newUser._id}`;
     const qrCodeImage = await qrcode.toDataURL(qrCodeUrl);
     
     // Save QR code to user profile
