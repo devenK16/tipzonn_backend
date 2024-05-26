@@ -7,7 +7,8 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const workerRoutes = require('./routes/workers');
 const usersRouter = require('./routes/users');
-const placesRouter = require('./routes/places'); 
+const placesRouter = require('./routes/places');
+const paymentRoutes = require('./routes/payment'); 
 const dotenv = require("dotenv");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api', placesRouter);
+app.use('/api/payment', paymentRoutes);
 
 
 
