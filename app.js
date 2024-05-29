@@ -7,6 +7,8 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const workerRoutes = require('./routes/workers');
 const usersRouter = require('./routes/users');
+const placesRouter = require('./routes/places');
+const paymentRoutes = require('./routes/payment'); 
 const dotenv = require("dotenv");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -28,6 +30,9 @@ mongoose.connect(process.env.MONGO_URL, {
 app.use('/api/auth', authRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/users', usersRouter);
+app.use('/api', placesRouter);
+app.use('/api/payment', paymentRoutes);
+
 
 
 // Serve the index.html file 
