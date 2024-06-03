@@ -8,6 +8,7 @@ const workerSchema = new mongoose.Schema({
   bankAccountNumber: String,
   ifscCode: String,
   photo: String,
+  contactNo : String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
