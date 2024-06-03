@@ -19,11 +19,11 @@ router.get('/', auth, async (req, res) => {
 
 // Add worker
 router.post('/', auth, async (req, res) => {
-  const { name , profession , upiId , bankAccountName , bankAccountNumber , ifscCode , photo } = req.body;
+  const { name , profession , upiId , bankAccountName , bankAccountNumber , ifscCode , photo , contactNo } = req.body;
   const userId = req.user.id;
 
   try {
-    const newWorker = new Worker({ name : name , profession: profession ,upiId: upiId , bankAccountName: bankAccountName , bankAccountNumber : bankAccountNumber , ifscCode: ifscCode , photo: photo, userId: userId });
+    const newWorker = new Worker({ name : name , profession: profession ,upiId: upiId , bankAccountName: bankAccountName , bankAccountNumber : bankAccountNumber , ifscCode: ifscCode , photo: photo, userId: userId , contactNo: contactNo });
     await newWorker.save();
     res.status(201).json( newWorker );
   } catch (err) {
@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
 
 // Update worker
 router.put('/:id', auth, async (req, res) => {
-  const { name , profession , upiId , bankAccountName , bankAccountNumber , ifscCode , photo } = req.body;
+  const { name , profession , upiId , bankAccountName , bankAccountNumber , ifscCode , photo , contactNo } = req.body;
   const workerId = req.params.id;
   const userId = req.user.id;
 
@@ -50,6 +50,7 @@ router.put('/:id', auth, async (req, res) => {
     worker.bankAccountNumber = bankAccountNumber;
     worker.ifscCode = ifscCode;
     worker.photo = photo;
+    worker.contactNo = contactNo;
 
     await worker.save();
     res.status(200).json(worker);
