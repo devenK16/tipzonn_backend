@@ -25,6 +25,9 @@ router.post('/', auth, async (req, res) => {
   try {
     const newWorker = new Worker({ name : name , profession: profession ,upiId: upiId , bankAccountName: bankAccountName , bankAccountNumber : bankAccountNumber , ifscCode: ifscCode , photo: photo, userId: userId , contactNo: contactNo });
     await newWorker.save();
+     // Update the worker with the dashboardURL
+     newWorker.dashboardURL = `https://www.tipzonn.com/tips/${newWorker._id}`;
+     await newWorker.save();
     res.status(201).json( newWorker );
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -95,12 +98,11 @@ router.get('/:userId', async (req, res) => {
 });
 
 // Get worker by ID test
-router.get('/worker/:workerId', auth, async (req, res) => {
+router.get('/worker/:workerId', async (req, res) => {
   const workerId = req.params.workerId;
-  const userId = req.user.id;
 
   try {
-    const worker = await Worker.findOne({ _id: workerId, userId });
+    const worker = await Worker.findOne({ _id: workerId });
 
     if (!worker) {
       return res.status(404).json({ message: 'Worker not found' });
