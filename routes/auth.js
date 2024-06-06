@@ -31,7 +31,19 @@ router.post('/signup', async (req, res) => {
     
     // Generate QR code
     const qrCodeUrl = `https://www.tipzonn.com/?tzId=${newUser._id}`;
-    const qrCodeImage = await qrcode.toDataURL(qrCodeUrl);
+    const options = {
+      errorCorrectionLevel: 'H', // Highest level of error correction
+      width: 600, // Set a larger width
+      height: 600, // Set a larger height
+      color: {
+        dark: '#000000', // Color for the QR code
+        light: '#ffffff' // Color for the background
+      },
+      margin:2, // Define how much margin should be left around the QR code
+      antialias: true, // Enable anti-aliasing
+      maskPattern: 3, // Set the mask pattern to use (0-7)
+    };
+    const qrCodeImage = await qrcode.toDataURL(qrCodeUrl , options);
     
     // Save QR code to user profile
     newUser.qrCode = qrCodeImage;
