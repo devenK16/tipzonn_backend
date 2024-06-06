@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const apiKey = process.env.PLACES_API_KEY;
 
 router.get('/place', async (req, res) => {
     const { input, key } = req.query;
-    const endpoint = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(input)}&inputtype=textquery&fields=place_id&key=${key}`;
+    const endpoint = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(input)}&inputtype=textquery&fields=place_id&key=${apiKey}`;
   
     try {
       const response = await fetch(endpoint); // Use built-in fetch
