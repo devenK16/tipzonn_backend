@@ -9,6 +9,7 @@ const workerSchema = new mongoose.Schema({
   ifscCode: String,
   photo: String,
   contactNo : String,
+  dashboardURL: String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
