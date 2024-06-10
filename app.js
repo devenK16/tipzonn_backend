@@ -10,6 +10,7 @@ const usersRouter = require('./routes/users');
 const placesRouter = require('./routes/places');
 const paymentRoutes = require('./routes/payment'); 
 const tipsRoutes = require('./routes/tips')
+const reviewRoutes = require('./routes/reviews')
 const dotenv = require("dotenv");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -33,7 +34,8 @@ app.use('/api/workers', workerRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api', placesRouter);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/tips', tipsRoutes )
+app.use('/api/tips', tipsRoutes );
+app.use('/api/reviews' , reviewRoutes);
 
 
 
