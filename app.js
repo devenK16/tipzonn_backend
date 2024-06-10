@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URL_TEST, {
+mongoose.connect(process.env.MONGO_URL, {
   // useNewUrlParser: true,
   // useUnifiedTopology: true,
 })
