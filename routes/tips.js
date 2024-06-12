@@ -27,7 +27,7 @@ router.get('/:workerId', async (req, res) => {
 // Add a tip for a specific worker by their ID
 router.post('/:workerId', async (req, res) => {
     const workerId = req.params.workerId;
-    const { amount } = req.body;
+    let { amount } = req.body;
   
     try {
       // Find the worker by ID
@@ -36,7 +36,8 @@ router.post('/:workerId', async (req, res) => {
       if (!worker) {
         return res.status(404).json({ message: 'Worker not found' });
       }
-  
+
+      amount = amount * 0.95;
       // Create a new tip
       const newTip = {
         date: new Date(),
