@@ -6,7 +6,7 @@ const Review = require('../models/Reviews');
 router.post('/addReview/:userId', async (req, res) => {
     try {
       const { userId } = req.params;
-      const { reviewText } = req.body;
+      const { reviewText, rating } = req.body;
   
       // Find the user's review document or create a new one if it doesn't exist
       let reviewDoc = await Review.findOne({ userId: userId });
@@ -15,7 +15,7 @@ router.post('/addReview/:userId', async (req, res) => {
       }
   
       // Add the new review to the reviews array
-      reviewDoc.reviews.push({ reviewText: reviewText });
+      reviewDoc.reviews.push({ reviewText: reviewText, rating: rating });
   
       // Save the updated review document
       await reviewDoc.save();
