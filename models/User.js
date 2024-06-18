@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   address: String,
   contactNo: String,
   qrCode: String,
+  status: { type: String, default: 'pending' }
 });
 
 const User = mongoose.model('User', userSchema);
