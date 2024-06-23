@@ -26,22 +26,33 @@ router.post('/addReview/:userId', async (req, res) => {
     }
   });
   
-  // Endpoint to get reviews by user ID
-  router.get('/:userId', async (req, res) => {
-    try {
+// Endpoint to get reviews by user ID with pagination
+router.get('/:userId', async (req, res) => {
+  try {
       const { userId } = req.params;
-  
+      const page = parseInt(req.query.page) || 1;  // Default page to 1 if not specified
+      const limit = 20;
+      const skip = (page - 1) * limit;
+
       // Find the user's review document
       const reviewDoc = await Review.findOne({ userId: userId });
-  
+
       if (!reviewDoc) {
-        return res.status(404).json({ message: 'No reviews found for this user' });
+          return res.status(404).json({ message: 'No reviews found for this user' });
       }
-  
-      res.status(200).json(reviewDoc.reviews);
-    } catch (error) {
+
+      // Get paginated reviews
+      const reviews = reviewDoc.reviews.slice(skip, skip + limit);
+
+      res.status(200).json({
+          currentPage: page,
+          totalPages: Math.ceil(reviewDoc.reviews.length / limit),
+          reviews: reviews
+      });
+  } catch (error) {
       res.status(500).json({ error: error.message });
-    }
-  });
+  }
+});
+
 
 module.exports = router;
