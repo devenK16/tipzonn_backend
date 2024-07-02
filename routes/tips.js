@@ -3,14 +3,20 @@ const Worker = require('../models/Worker');
 const Tip = require('../models/Tip'); // Import the Tip model
 const router = express.Router();
 
+
+const roundToTwo = (num) => Math.round(num * 100) / 100;
+
 // Add a tip for multiple workers by their IDs
 router.post('/multiple', async (req, res) => {
   const { workerIds, amount } = req.body;
 
   try {
     // Calculate the individual amount to be distributed to each worker
+
+    const fee = roundToTwo(amount * 0.05);
+    const remainingAmount = roundToTwo(amount - fee);
     
-    const tipAmount = (amount * 0.95) / workerIds.length; 
+    const tipAmount = roundToTwo(remainingAmount / workerIds.length);
 
     for (const workerId of workerIds) {
       const worker = await Worker.findOne({ _id: workerId });
@@ -87,8 +93,9 @@ router.post('/:workerId', async (req, res) => {
       if (!worker) {
         return res.status(404).json({ message: 'Worker not found' });
       }
-
-      amount = amount * 0.95;
+      // Calculate the fee and subtract it from the amount
+      const fee = roundToTwo(amount * 0.05);
+      amount = roundToTwo(amount - fee);
       // Create a new tip
       const newTip = {
         date: new Date(),
