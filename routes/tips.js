@@ -5,12 +5,12 @@ const router = express.Router();
 
 // Add a tip for multiple workers by their IDs
 router.post('/multiple', async (req, res) => {
-  const { workerIds, amount, isCheckedFee } = req.body;
+  const { workerIds, amount } = req.body;
 
   try {
     // Calculate the individual amount to be distributed to each worker
-    let tipAmount = isCheckedFee ? amount : (amount * 0.95);
-    tipAmount /= workerIds.length;
+    
+    const tipAmount = (amount * 0.95) / workerIds.length; 
 
     for (const workerId of workerIds) {
       const worker = await Worker.findOne({ _id: workerId });
@@ -78,7 +78,7 @@ router.get('/:workerId', async (req, res) => {
 // Add a tip for a specific worker by their ID
 router.post('/:workerId', async (req, res) => {
     const workerId = req.params.workerId;
-    let { amount, isCheckedFee } = req.body;
+    let { amount } = req.body;
   
     try {
       // Find the worker by ID
@@ -88,7 +88,7 @@ router.post('/:workerId', async (req, res) => {
         return res.status(404).json({ message: 'Worker not found' });
       }
 
-      amount = isCheckedFee ? amount : (amount * 0.95);
+      amount = amount * 0.95;
       // Create a new tip
       const newTip = {
         date: new Date(),
