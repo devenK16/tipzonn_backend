@@ -114,4 +114,24 @@ router.get('/worker/:workerId', async (req, res) => {
   }
 });
 
+// Save FCM token for a specific worker
+router.post('/worker/:workerId/token', async (req, res) => {
+  const workerId = req.params.workerId;
+  const { token } = req.body;
+
+  try {
+    const worker = await Worker.findOne({ _id: workerId });
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+    worker.deviceToken = token;
+    await worker.save();
+
+    res.status(200).json({ message: 'FCM token saved successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

@@ -11,6 +11,7 @@ const workerSchema = new mongoose.Schema({
   contactNo : String,
   dashboardURL: String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  deviceToken: { type: String } // Add deviceToken field
 });
 
 const Worker = mongoose.model('Worker', workerSchema);

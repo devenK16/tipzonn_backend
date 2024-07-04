@@ -1,10 +1,33 @@
 const express = require('express');
 const Worker = require('../models/Worker');
 const Tip = require('../models/Tip'); // Import the Tip model
+const firebaseAdmin = require('../firebase'); // Import Firebase Admin
 const router = express.Router();
 
 
 const roundToTwo = (num) => Math.round(num * 100) / 100;
+
+const sendNotification = async (worker, amount) => {
+  if (!worker.deviceToken) {
+    console.error(`No device token for worker ${worker._id}`);
+    return;
+  }
+
+  const message = {
+    notification: {
+      title: 'New Tip Received!',
+      body: `You have received a new tip of ₹${amount.toFixed(2)}.`
+    },
+    token: worker.deviceToken
+  };
+
+  try {
+    await firebaseAdmin.messaging().send(message);
+    console.log(`Notification sent to worker ${worker._id}`);
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
 
 // Add a tip for multiple workers by their IDs
 router.post('/multiple', async (req, res) => {
@@ -51,6 +74,7 @@ router.post('/multiple', async (req, res) => {
       }
 
       await tip.save();
+      await sendNotification(worker, tipAmount); // Send notification
     }
 
     res.status(201).json({ message: 'Tips added successfully' });
@@ -124,6 +148,8 @@ router.post('/:workerId', async (req, res) => {
   
       await tip.save();
   
+      await sendNotification(worker, amount); // Send notification
+
       res.status(201).json(newTip);
     } catch (err) {
       res.status(500).json({ message: err.message });
