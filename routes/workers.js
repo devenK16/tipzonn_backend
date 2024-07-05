@@ -3,7 +3,10 @@ const express = require('express');
 const Worker = require('../models/Worker');
 const auth = require('../middleware/auth');
 const User = require('../models/User');
+const Tip = require('../models/Tip');
+const mongoose = require('mongoose');
 const router = express.Router();
+const moment = require('moment');
 
 // Get workers
 router.get('/', auth, async (req, res) => {
@@ -109,6 +112,77 @@ router.get('/worker/:workerId', async (req, res) => {
     }
 
     res.json(worker);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Helper function to get date range for the current day
+const getDateRangeForDay = (date) => {
+  const start = moment(date).startOf('day').toDate();
+  const end = moment(date).endOf('day').toDate();
+  return { start, end };
+};
+
+// Helper function to get date range for the current month
+const getDateRangeForMonth = (date) => {
+  const start = moment(date).startOf('month').toDate();
+  const end = moment(date).endOf('month').toDate();
+  return { start, end };
+};
+
+// Helper function to aggregate tips by date range
+const aggregateTips = async (workerId, dateRange) => {
+  const { start, end } = dateRange;
+  const tips = await Tip.aggregate([
+    { $match: { workerId: new mongoose.Types.ObjectId(workerId), 'tips.date': { $gte: start, $lte: end } } },
+    { $unwind: '$tips' },
+    { $match: { 'tips.date': { $gte: start, $lte: end } } },
+    { $group: { _id: null, totalTip: { $sum: '$tips.amount' }, tips: { $push: '$tips' } } },
+  ]);
+
+  return tips[0] || { totalTip: 0, tips: [] };
+};
+
+// Endpoint to get worker analytics
+router.get('/:workerId/analytics', async (req, res) => {
+  const workerId = req.params.workerId;
+  
+  try {
+    const dailyTips = await aggregateTips(workerId, getDateRangeForDay(new Date()));
+    const totalTips = await Tip.aggregate([
+      { $match: { workerId: new mongoose.Types.ObjectId(workerId) } },
+      { $unwind: '$tips' },
+      { $group: { _id: null, totalTip: { $sum: '$tips.amount' } } },
+    ]);
+
+    const monthlyBreakdown = await Tip.aggregate([
+      { $match: { workerId: new mongoose.Types.ObjectId(workerId) } },
+      { $unwind: '$tips' },
+      {
+        $group: {
+          _id: { year: { $year: '$tips.date' }, month: { $month: '$tips.date' } },
+          totalTip: { $sum: '$tips.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          year: '$_id.year',
+          month: '$_id.month',
+          totalTip: { $round: ['$totalTip', 2] }  // Round to 2 decimal places
+        }
+      },
+      { $sort: { 'year': -1, 'month': -1 } },  // Sort in descending order to get the most recent month first
+    ]);
+
+    const response = {
+      total: Number(totalTips[0]?.totalTip.toFixed(2)) || 0,  // Round total to 2 decimal places
+      daily: Number(dailyTips.totalTip.toFixed(2)),  // Round daily to 2 decimal places
+      monthlyBreakdown: monthlyBreakdown
+    };
+
+    res.json(response);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

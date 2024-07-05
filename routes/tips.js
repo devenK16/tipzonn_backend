@@ -28,6 +28,7 @@ router.post('/multiple', async (req, res) => {
       const newTip = {
         date: new Date(),
         amount: tipAmount,
+        fee: roundToTwo(fee / workerIds.length),
       };
 
       // Update the total tip amount for the worker
@@ -99,7 +100,8 @@ router.post('/:workerId', async (req, res) => {
       // Create a new tip
       const newTip = {
         date: new Date(),
-        amount: amount
+        amount: amount,
+        fee,
       };
   
       // Update the total tip amount for the worker

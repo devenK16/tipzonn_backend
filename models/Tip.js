@@ -6,7 +6,8 @@ const tipSchema = new mongoose.Schema({
   tips: [
     {
       date: { type: Date, default: Date.now },
-      amount: Number
+      amount: Number,
+      fee: Number
     }
   ],
   workerContactNo: String
