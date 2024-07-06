@@ -6,16 +6,23 @@ const Tip = require('../../models/Tip');
 const moment = require('moment');
 
 // Get all users with optional filtering by status
-router.get('/users', adminAuth, async (req, res) => {
-  const { status } = req.query;
+router.get('/users', async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+  
   try {
-    let users;
-    if (status) {
-      users = await User.find({ status });
-    } else {
-      users = await User.find();
-    }
-    res.json(users);
+    const users = await User.find()
+      .sort({ _id: -1 }) // Sort by latest users first
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+      
+    const total = await User.countDocuments();
+
+    res.json({
+      users,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -13,6 +13,7 @@ const tipsRoutes = require('./routes/tips')
 const reviewRoutes = require('./routes/reviews')
 const adminAuthRoutes = require('./routes/Admin/auth');
 const adminRoutes = require('./routes/Admin/admin');
+const adminUsersRoutes = require('./routes/Admin/users');
 const dotenv = require("dotenv");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -39,7 +40,8 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/tips', tipsRoutes );
 app.use('/api/reviews' , reviewRoutes);
 app.use('/api/admin/auth', adminAuthRoutes); 
-app.use('/api/admin/admin', adminRoutes); 
+app.use('/api/admin', adminRoutes); 
+app.use('/api/admin/users', adminUsersRoutes);
 
 
 
