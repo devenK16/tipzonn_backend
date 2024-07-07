@@ -102,6 +102,23 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
+// Get workers by userId for dashboard
+router.get('/dashboard/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    // Find workers based on the userId
+    const workers = await Worker.find({ userId }).populate('userId', 'name');  // Exclude deleted workers
+
+    if (workers.length === 0) {
+      return res.status(404).json({ message: 'No workers found for this user' });
+    }
+
+    res.json(workers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get worker by ID test
 router.get('/worker/:workerId', async (req, res) => {
   const workerId = req.params.workerId;
