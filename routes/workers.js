@@ -22,16 +22,34 @@ router.get('/', auth, async (req, res) => {
 
 // Add worker
 router.post('/', auth, async (req, res) => {
-  const { name , profession , upiId , bankAccountName , bankAccountNumber , ifscCode , photo , contactNo } = req.body;
+  const { name, profession, upiId, bankAccountName, bankAccountNumber, ifscCode, photo, contactNo } = req.body;
   const userId = req.user.id;
 
   try {
-    const newWorker = new Worker({ name : name , profession: profession ,upiId: upiId , bankAccountName: bankAccountName , bankAccountNumber : bankAccountNumber , ifscCode: ifscCode , photo: photo, userId: userId , contactNo: contactNo });
-    await newWorker.save();
-     // Update the worker with the dashboardURL
-     newWorker.dashboardURL = `https://www.tipzonn.com/tips/${newWorker._id}`;
-     await newWorker.save();
-    res.status(201).json( newWorker );
+    let worker = await Worker.findOne({ contactNo });
+
+    if (worker) {
+      // Worker already exists, update userId and set deleted to false
+      worker.userId = userId;
+      worker.deleted = false;
+      worker.name = name;
+      worker.profession = profession;
+      worker.upiId = upiId;
+      worker.bankAccountName = bankAccountName;
+      worker.bankAccountNumber = bankAccountNumber;
+      worker.ifscCode = ifscCode;
+      worker.photo = photo;
+    } else {
+      // Create new worker
+      worker = new Worker({
+        name, profession, upiId, bankAccountName, bankAccountNumber, ifscCode, photo, contactNo,
+        userId, deleted: false
+      });
+      worker.dashboardURL = `https://www.tipzonn.com/tips/${worker._id}`;
+    }
+
+    await worker.save();
+    res.status(201).json(worker);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

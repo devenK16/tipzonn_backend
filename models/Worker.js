@@ -11,7 +11,7 @@ const workerSchema = new mongoose.Schema({
   contactNo : String,
   dashboardURL: String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  deleted: { type: Boolean, default: false } // Add deleted field
+  deleted: { type: Boolean, default: false }
 });
 
 const Worker = mongoose.model('Worker', workerSchema);
